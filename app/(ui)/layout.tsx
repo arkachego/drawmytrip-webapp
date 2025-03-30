@@ -14,7 +14,7 @@ type Props = {
   children: React.ReactNode,
 };
 
-const RootLayout: React.FC<Props> = ({ children }) => {
+const UILayout: React.FC<Props> = ({ children }) => {
 
   const [ user, setUser ] = useState<AuthUser | null>(null);
 
@@ -45,4 +45,4 @@ const RootLayout: React.FC<Props> = ({ children }) => {
 
 };
 
-export default RootLayout;
+export default UILayout;

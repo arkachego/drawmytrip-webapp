@@ -4,7 +4,7 @@ import { Button } from "@mantine/core";
 import { signOut } from "aws-amplify/auth";
 import { useEffect } from "react";
 
-const RootPage: React.FC = () => {
+const UIPage: React.FC = () => {
 
   return (
     <div>
@@ -14,4 +14,4 @@ const RootPage: React.FC = () => {
 
 };
 
-export default RootPage;
+export default UIPage;
