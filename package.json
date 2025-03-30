@@ -9,17 +9,36 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.5.8",
+    "@aws-amplify/ui-react": "^6.9.5",
+    "@mantine/core": "^7.17.3",
+    "@tabler/icons-react": "^3.31.0",
+    "aws-amplify": "^6.14.1",
+    "jsonwebtoken": "^9.0.2",
+    "jwk-to-pem": "^2.0.7",
+    "next": "^15.3.0-canary.25",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.2.4"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@aws-amplify/backend": "^1.15.0",
+    "@aws-amplify/backend-cli": "^1.5.0",
+    "@eslint/eslintrc": "^3",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/jwk-to-pem": "^2.0.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "aws-cdk": "^2.1003.0",
+    "aws-cdk-lib": "^2.180.0",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.25.1",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
-    "@eslint/eslintrc": "^3"
+    "postcss": "^8.5.3",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }
