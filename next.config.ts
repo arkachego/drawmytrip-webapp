@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     nodeMiddleware: true,
     optimizePackageImports: [
       "@mantine/core",
+      "@mantine/hooks",
     ],
   }
 };
