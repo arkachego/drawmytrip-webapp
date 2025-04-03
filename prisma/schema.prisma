@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -7,22 +8,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model action_items {
-  created_at     DateTime     @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime     @default(now()) @db.Timestamptz(6)
-  id             String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  participant_id String       @db.Uuid
-  waypoint_id    String       @db.Uuid
-  title          String       @db.VarChar(20)
-  description    String?      @db.VarChar(500)
-  category       Int          @default(0)
-  participants   participants @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "action_items_participant_id_foreign")
-  waypoints      waypoints    @relation(fields: [waypoint_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "action_items_waypoint_id_foreign")
+model ActionItem {
+  created_at     DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime    @default(now()) @db.Timestamptz(6)
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  participant_id String      @db.Uuid
+  waypoint_id    String      @db.Uuid
+  title          String      @db.VarChar(20)
+  description    String?     @db.VarChar(500)
+  category       Int         @default(0)
+  Participant    Participant @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "actionitem_participant_id_foreign")
+  Waypoint       Waypoint    @relation(fields: [waypoint_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "actionitem_waypoint_id_foreign")
 
-  @@index([category], map: "action_items_category_index")
+  @@index([category], map: "actionitem_category_index")
 }
 
-model attachments {
+model Address {
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @db.Timestamptz(6)
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  country_id String    @db.Uuid
+  user_id    String    @db.Uuid
+  line_1     String?   @db.VarChar(100)
+  line_2     String?   @db.VarChar(100)
+  city       String?   @db.VarChar(100)
+  state      String?   @db.VarChar(100)
+  pin_code   String?   @db.VarChar(20)
+  is_default Boolean   @default(false)
+  is_billing Boolean   @default(false)
+  Country    Country   @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "address_country_id_foreign")
+  User       User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "address_user_id_foreign")
+  Invoice    Invoice[]
+}
+
+model Attachment {
   created_at  DateTime @default(now()) @db.Timestamptz(6)
   updated_at  DateTime @default(now()) @db.Timestamptz(6)
   id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
@@ -34,135 +53,302 @@ model attachments {
   size        BigInt
   key         String   @db.VarChar(500)
 
-  @@index([category], map: "attachments_category_index")
+  @@index([category], map: "attachment_category_index")
 }
 
-model conveyances {
-  created_at DateTime    @default(now()) @db.Timestamptz(6)
-  updated_at DateTime    @default(now()) @db.Timestamptz(6)
-  id         String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  vehicle_id String?     @db.Uuid
-  trip_id    String      @db.Uuid
-  category   Int         @default(0)
-  trips      trips       @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "conveyances_trip_id_foreign")
-  vehicles   vehicles?   @relation(fields: [vehicle_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "conveyances_vehicle_id_foreign")
-  journeys   journeys[]
-  tenancies  tenancies[]
-
-  @@unique([vehicle_id, trip_id], map: "conveyances_vehicle_id_trip_id_unique")
-  @@index([category], map: "conveyances_category_index")
+model Contact {
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id    String   @db.Uuid
+  email      String   @db.VarChar(100)
+  code       String?  @db.VarChar(10)
+  phone      String?  @db.VarChar(20)
+  User       User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contact_user_id_foreign")
 }
 
-model countries {
-  created_at  DateTime    @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime    @default(now()) @db.Timestamptz(6)
-  id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  title       String      @db.VarChar(100)
-  description String?     @db.VarChar(500)
-  iso_code    String      @db.VarChar(3)
-  currency    String      @db.VarChar(3)
-  is_allowed  Boolean     @default(false)
-  locations   locations[]
-  prices      prices[]
-  users       users[]
+model Conveyance {
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @db.Timestamptz(6)
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  vehicle_id String?   @db.Uuid
+  trip_id    String    @db.Uuid
+  category   Int       @default(0)
+  Trip       Trip      @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "conveyance_trip_id_foreign")
+  Vehicle    Vehicle?  @relation(fields: [vehicle_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "conveyance_vehicle_id_foreign")
+  Journey    Journey[]
+  Tenancy    Tenancy[]
+
+  @@unique([vehicle_id, trip_id], map: "conveyance_vehicle_id_trip_id_unique")
+  @@index([category], map: "conveyance_category_index")
 }
 
-model coupons {
+model Country {
   created_at  DateTime   @default(now()) @db.Timestamptz(6)
   updated_at  DateTime   @default(now()) @db.Timestamptz(6)
   id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   title       String     @db.VarChar(100)
   description String?    @db.VarChar(500)
-  invoices    invoices[]
+  iso_code    String     @db.VarChar(3)
+  currency    String     @db.VarChar(3)
+  is_allowed  Boolean    @default(false)
+  Address     Address[]
+  Location    Location[]
+  Price       Price[]
 }
 
-model expenses {
-  created_at     DateTime     @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime     @default(now()) @db.Timestamptz(6)
-  id             String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  participant_id String       @db.Uuid
-  waypoint_id    String       @db.Uuid
-  title          String       @db.VarChar(20)
-  description    String?      @db.VarChar(500)
-  amount         Decimal?     @db.Decimal(8, 2)
-  participants   participants @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_participant_id_foreign")
-  waypoints      waypoints    @relation(fields: [waypoint_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_waypoint_id_foreign")
+model Coupon {
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title       String    @db.VarChar(100)
+  description String?   @db.VarChar(500)
+  Invoice     Invoice[]
 }
 
-model footprints {
-  created_at     DateTime     @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime     @default(now()) @db.Timestamptz(6)
-  id             String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  participant_id String       @db.Uuid
-  waypoint_id    String       @db.Uuid
-  participants   participants @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "footprints_participant_id_foreign")
-  waypoints      waypoints    @relation(fields: [waypoint_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "footprints_waypoint_id_foreign")
-
-  @@unique([participant_id, waypoint_id], map: "footprints_participant_id_waypoint_id_unique")
+model Expense {
+  created_at     DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime    @default(now()) @db.Timestamptz(6)
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  participant_id String      @db.Uuid
+  waypoint_id    String      @db.Uuid
+  title          String      @db.VarChar(20)
+  description    String?     @db.VarChar(500)
+  amount         Decimal?    @db.Decimal(8, 2)
+  Participant    Participant @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expense_participant_id_foreign")
+  Waypoint       Waypoint    @relation(fields: [waypoint_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expense_waypoint_id_foreign")
 }
 
-model invoices {
-  created_at      DateTime       @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime       @default(now()) @db.Timestamptz(6)
-  id              String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  coupon_id       String?        @db.Uuid
-  subscription_id String?        @db.Uuid
-  trip_id         String?        @db.Uuid
-  title           String         @db.VarChar(20)
-  description     String?        @db.VarChar(500)
-  pretotal        Decimal        @db.Decimal(8, 2)
-  discount        Decimal        @db.Decimal(8, 2)
-  subtotal        Decimal        @db.Decimal(8, 2)
-  tax             Decimal        @db.Decimal(8, 2)
-  total           Decimal        @db.Decimal(8, 2)
-  coupons         coupons?       @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoices_coupon_id_foreign")
-  subscriptions   subscriptions? @relation(fields: [subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoices_subscription_id_foreign")
-  trips           trips?         @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoices_trip_id_foreign")
+model Footprint {
+  created_at     DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime    @default(now()) @db.Timestamptz(6)
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  participant_id String      @db.Uuid
+  waypoint_id    String      @db.Uuid
+  Participant    Participant @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "footprint_participant_id_foreign")
+  Waypoint       Waypoint    @relation(fields: [waypoint_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "footprint_waypoint_id_foreign")
+
+  @@unique([participant_id, waypoint_id], map: "footprint_participant_id_waypoint_id_unique")
 }
 
-model journeys {
-  created_at                              DateTime    @default(now()) @db.Timestamptz(6)
-  updated_at                              DateTime    @default(now()) @db.Timestamptz(6)
-  id                                      String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  trip_id                                 String      @db.Uuid
-  conveyance_id                           String      @db.Uuid
-  start_id                                String      @db.Uuid
-  finish_id                               String      @db.Uuid
-  title                                   String      @db.VarChar(20)
-  description                             String?     @db.VarChar(500)
-  order                                   Int
-  distance                                Decimal     @db.Decimal(8, 2)
-  duration                                Int?
-  conveyances                             conveyances @relation(fields: [conveyance_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journeys_conveyance_id_foreign")
-  waypoints_journeys_finish_idTowaypoints waypoints   @relation("journeys_finish_idTowaypoints", fields: [finish_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journeys_finish_id_foreign")
-  waypoints_journeys_start_idTowaypoints  waypoints   @relation("journeys_start_idTowaypoints", fields: [start_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journeys_start_id_foreign")
-  trips                                   trips       @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journeys_trip_id_foreign")
-  tenancies                               tenancies[]
-
-  @@index([order], map: "journeys_order_index")
+model Invoice {
+  created_at      DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime      @default(now()) @db.Timestamptz(6)
+  id              String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  coupon_id       String?       @db.Uuid
+  address_id      String        @db.Uuid
+  subscription_id String?       @db.Uuid
+  trip_id         String?       @db.Uuid
+  title           String        @db.VarChar(20)
+  description     String?       @db.VarChar(500)
+  pretotal        Decimal       @db.Decimal(8, 2)
+  discount        Decimal       @db.Decimal(8, 2)
+  subtotal        Decimal       @db.Decimal(8, 2)
+  tax             Decimal       @db.Decimal(8, 2)
+  total           Decimal       @db.Decimal(8, 2)
+  Address         Address       @relation(fields: [address_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_address_id_foreign")
+  Coupon          Coupon?       @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_coupon_id_foreign")
+  Subscription    Subscription? @relation(fields: [subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_subscription_id_foreign")
+  Trip            Trip?         @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_trip_id_foreign")
 }
 
-model locations {
-  created_at  DateTime    @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime    @default(now()) @db.Timestamptz(6)
-  id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  country_id  String      @db.Uuid
-  trip_id     String?     @db.Uuid
-  title       String      @db.VarChar(20)
-  description String?     @db.VarChar(500)
-  email       String?     @db.VarChar(100)
-  code        String?     @db.VarChar(10)
-  phone       String?     @db.VarChar(20)
-  line_1      String?     @db.VarChar(100)
-  line_2      String?     @db.VarChar(100)
-  city        String?     @db.VarChar(100)
-  state       String?     @db.VarChar(100)
-  pin_code    String?     @db.VarChar(20)
-  latitude    Int         @default(0)
-  longitude   Int         @default(0)
-  countries   countries   @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "locations_country_id_foreign")
-  trips       trips?      @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "locations_trip_id_foreign")
-  waypoints   waypoints[]
+model Journey {
+  created_at                           DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at                           DateTime   @default(now()) @db.Timestamptz(6)
+  id                                   String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  trip_id                              String     @db.Uuid
+  conveyance_id                        String     @db.Uuid
+  start_id                             String     @db.Uuid
+  finish_id                            String     @db.Uuid
+  title                                String     @db.VarChar(20)
+  description                          String?    @db.VarChar(500)
+  order                                Int
+  distance                             Decimal    @db.Decimal(8, 2)
+  duration                             Int?
+  Conveyance                           Conveyance @relation(fields: [conveyance_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journey_conveyance_id_foreign")
+  Waypoint_Journey_finish_idToWaypoint Waypoint   @relation("Journey_finish_idToWaypoint", fields: [finish_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journey_finish_id_foreign")
+  Waypoint_Journey_start_idToWaypoint  Waypoint   @relation("Journey_start_idToWaypoint", fields: [start_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journey_start_id_foreign")
+  Trip                                 Trip       @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "journey_trip_id_foreign")
+  Tenancy                              Tenancy[]
+
+  @@index([order], map: "journey_order_index")
+}
+
+model Location {
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  country_id  String     @db.Uuid
+  trip_id     String?    @db.Uuid
+  title       String     @db.VarChar(20)
+  description String?    @db.VarChar(500)
+  email       String?    @db.VarChar(100)
+  code        String?    @db.VarChar(10)
+  phone       String?    @db.VarChar(20)
+  line_1      String?    @db.VarChar(100)
+  line_2      String?    @db.VarChar(100)
+  city        String?    @db.VarChar(100)
+  state       String?    @db.VarChar(100)
+  pin_code    String?    @db.VarChar(20)
+  latitude    Int        @default(0)
+  longitude   Int        @default(0)
+  Country     Country    @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "location_country_id_foreign")
+  Trip        Trip?      @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "location_trip_id_foreign")
+  Waypoint    Waypoint[]
+}
+
+model Participant {
+  created_at DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at DateTime     @default(now()) @db.Timestamptz(6)
+  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id    String       @db.Uuid
+  trip_id    String       @db.Uuid
+  category   Int          @default(0)
+  ActionItem ActionItem[]
+  Expense    Expense[]
+  Footprint  Footprint[]
+  Trip       Trip         @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participant_trip_id_foreign")
+  User       User         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participant_user_id_foreign")
+  Tenancy    Tenancy[]
+
+  @@unique([user_id, trip_id], map: "participant_user_id_trip_id_unique")
+  @@index([category], map: "participant_category_index")
+}
+
+model Preference {
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String   @db.Uuid
+  date_format String   @default("DD-MMM-YY") @db.VarChar(10)
+  time_format String   @default("hh:mm A") @db.VarChar(10)
+  User        User     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "preference_user_id_foreign")
+}
+
+model Price {
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  country_id String   @db.Uuid
+  product_id String   @db.Uuid
+  amount     Decimal  @db.Decimal(8, 2)
+  months     Int?
+  Country    Country  @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "price_country_id_foreign")
+  Product    Product  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "price_product_id_foreign")
+}
+
+model Product {
+  created_at   DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime       @default(now()) @db.Timestamptz(6)
+  id           String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title        String         @db.VarChar(100)
+  description  String?        @db.VarChar(500)
+  unit         String         @db.VarChar(20)
+  recurring    Boolean        @default(false)
+  Price        Price[]
+  Subscription Subscription[]
+}
+
+model Subscription {
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @db.Timestamptz(6)
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  product_id String    @db.Uuid
+  user_id    String    @db.Uuid
+  Invoice    Invoice[]
+  Product    Product   @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "subscription_product_id_foreign")
+  User       User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "subscription_user_id_foreign")
+}
+
+model Tenancy {
+  created_at     DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime    @default(now()) @db.Timestamptz(6)
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  participant_id String      @db.Uuid
+  conveyance_id  String      @db.Uuid
+  journey_id     String      @db.Uuid
+  Conveyance     Conveyance  @relation(fields: [conveyance_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tenancy_conveyance_id_foreign")
+  Journey        Journey     @relation(fields: [journey_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tenancy_journey_id_foreign")
+  Participant    Participant @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tenancy_participant_id_foreign")
+
+  @@unique([participant_id, conveyance_id, journey_id], map: "tenancy_participant_id_conveyance_id_journey_id_unique")
+}
+
+model Trip {
+  created_at        DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime      @default(now()) @db.Timestamptz(6)
+  id                String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title             String        @db.VarChar(20)
+  description       String?       @db.VarChar(500)
+  status            Int           @default(3)
+  duration          Int?
+  distance          Decimal?      @db.Decimal(8, 2)
+  budget            Decimal?      @db.Decimal(8, 2)
+  expense           Decimal?      @db.Decimal(8, 2)
+  starts_at         DateTime?     @db.Timestamptz(6)
+  finishes_at       DateTime?     @db.Timestamptz(6)
+  member_limit      Int           @default(1)
+  waypoint_limit    Int           @default(10)
+  distance_limit    Int           @default(50)
+  action_item_limit Int           @default(10)
+  expense_limit     Int           @default(10)
+  Conveyance        Conveyance[]
+  Invoice           Invoice[]
+  Journey           Journey[]
+  Location          Location[]
+  Participant       Participant[]
+
+  @@index([status], map: "trip_status_index")
+}
+
+model User {
+  created_at   DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime       @default(now()) @db.Timestamptz(6)
+  id           String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  first_name   String         @db.VarChar(25)
+  last_name    String         @db.VarChar(25)
+  is_blocked   Boolean        @default(false)
+  Address      Address[]
+  Contact      Contact[]
+  Participant  Participant[]
+  Preference   Preference[]
+  Subscription Subscription[]
+  Vehicle      Vehicle[]
+}
+
+model Vehicle {
+  created_at   DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime     @default(now()) @db.Timestamptz(6)
+  id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id      String       @db.Uuid
+  title        String       @db.VarChar(20)
+  description  String?      @db.VarChar(500)
+  category     String       @db.VarChar(50)
+  tenancy      Int
+  registration String?      @db.VarChar(20)
+  Conveyance   Conveyance[]
+  User         User         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "vehicle_user_id_foreign")
+
+  @@index([registration], map: "vehicle_registration_index")
+}
+
+model Waypoint {
+  created_at                          DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at                          DateTime     @default(now()) @db.Timestamptz(6)
+  id                                  String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  location_id                         String       @db.Uuid
+  order                               Int
+  arrives_at                          DateTime?    @db.Timestamptz(6)
+  departs_at                          DateTime?    @db.Timestamptz(6)
+  ActionItem                          ActionItem[]
+  Expense                             Expense[]
+  Footprint                           Footprint[]
+  Journey_Journey_finish_idToWaypoint Journey[]    @relation("Journey_finish_idToWaypoint")
+  Journey_Journey_start_idToWaypoint  Journey[]    @relation("Journey_start_idToWaypoint")
+  Location                            Location     @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "waypoint_location_id_foreign")
+
+  @@unique([location_id, order], map: "waypoint_location_id_order_unique")
+  @@index([order], map: "waypoint_order_index")
 }
 
 model migrations {
@@ -175,157 +361,4 @@ model migrations {
 model migrations_lock {
   index     Int  @id @default(autoincrement())
   is_locked Int?
-}
-
-model participants {
-  created_at   DateTime       @default(now()) @db.Timestamptz(6)
-  updated_at   DateTime       @default(now()) @db.Timestamptz(6)
-  id           String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id      String         @db.Uuid
-  trip_id      String         @db.Uuid
-  category     Int            @default(0)
-  action_items action_items[]
-  expenses     expenses[]
-  footprints   footprints[]
-  trips        trips          @relation(fields: [trip_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participants_trip_id_foreign")
-  users        users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participants_user_id_foreign")
-  tenancies    tenancies[]
-
-  @@unique([user_id, trip_id], map: "participants_user_id_trip_id_unique")
-  @@index([category], map: "participants_category_index")
-}
-
-model prices {
-  created_at DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at DateTime  @default(now()) @db.Timestamptz(6)
-  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  country_id String    @db.Uuid
-  product_id String    @db.Uuid
-  amount     Decimal   @db.Decimal(8, 2)
-  months     Int?
-  countries  countries @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "prices_country_id_foreign")
-  products   products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "prices_product_id_foreign")
-}
-
-model products {
-  created_at    DateTime        @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
-  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  title         String          @db.VarChar(100)
-  description   String?         @db.VarChar(500)
-  unit          String          @db.VarChar(20)
-  recurring     Boolean         @default(false)
-  prices        prices[]
-  subscriptions subscriptions[]
-}
-
-model subscriptions {
-  created_at DateTime   @default(now()) @db.Timestamptz(6)
-  updated_at DateTime   @default(now()) @db.Timestamptz(6)
-  id         String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  product_id String     @db.Uuid
-  user_id    String     @db.Uuid
-  invoices   invoices[]
-  products   products   @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "subscriptions_product_id_foreign")
-  users      users      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "subscriptions_user_id_foreign")
-}
-
-model tenancies {
-  created_at     DateTime     @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime     @default(now()) @db.Timestamptz(6)
-  id             String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  participant_id String       @db.Uuid
-  conveyance_id  String       @db.Uuid
-  journey_id     String       @db.Uuid
-  conveyances    conveyances  @relation(fields: [conveyance_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tenancies_conveyance_id_foreign")
-  journeys       journeys     @relation(fields: [journey_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tenancies_journey_id_foreign")
-  participants   participants @relation(fields: [participant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tenancies_participant_id_foreign")
-
-  @@unique([participant_id, conveyance_id, journey_id], map: "tenancies_participant_id_conveyance_id_journey_id_unique")
-}
-
-model trips {
-  created_at        DateTime       @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime       @default(now()) @db.Timestamptz(6)
-  id                String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  title             String         @db.VarChar(20)
-  description       String?        @db.VarChar(500)
-  status            Int            @default(3)
-  duration          Int?
-  distance          Decimal?       @db.Decimal(8, 2)
-  budget            Decimal?       @db.Decimal(8, 2)
-  expense           Decimal?       @db.Decimal(8, 2)
-  starts_at         DateTime?      @db.Timestamptz(6)
-  finishes_at       DateTime?      @db.Timestamptz(6)
-  member_limit      Int            @default(1)
-  waypoint_limit    Int            @default(10)
-  distance_limit    Int            @default(50)
-  action_item_limit Int            @default(10)
-  expense_limit     Int            @default(10)
-  conveyances       conveyances[]
-  invoices          invoices[]
-  journeys          journeys[]
-  locations         locations[]
-  participants      participants[]
-
-  @@index([status], map: "trips_status_index")
-}
-
-model users {
-  created_at    DateTime        @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
-  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  country_id    String          @db.Uuid
-  first_name    String          @db.VarChar(25)
-  last_name     String          @db.VarChar(25)
-  is_blocked    Boolean         @default(false)
-  email         String          @db.VarChar(100)
-  code          String?         @db.VarChar(10)
-  phone         String?         @db.VarChar(20)
-  line_1        String?         @db.VarChar(100)
-  line_2        String?         @db.VarChar(100)
-  city          String?         @db.VarChar(100)
-  state         String?         @db.VarChar(100)
-  pin_code      String?         @db.VarChar(20)
-  date_format   String          @default("DD-MMM-YY") @db.VarChar(10)
-  time_format   String          @default("hh:mm A") @db.VarChar(10)
-  participants  participants[]
-  subscriptions subscriptions[]
-  countries     countries       @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_country_id_foreign")
-  vehicles      vehicles[]
-}
-
-model vehicles {
-  created_at   DateTime      @default(now()) @db.Timestamptz(6)
-  updated_at   DateTime      @default(now()) @db.Timestamptz(6)
-  id           String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id      String        @db.Uuid
-  title        String        @db.VarChar(20)
-  description  String?       @db.VarChar(500)
-  category     String        @db.VarChar(50)
-  tenancy      Int
-  registration String?       @db.VarChar(20)
-  conveyances  conveyances[]
-  users        users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "vehicles_user_id_foreign")
-
-  @@index([registration], map: "vehicles_registration_index")
-}
-
-model waypoints {
-  created_at                             DateTime       @default(now()) @db.Timestamptz(6)
-  updated_at                             DateTime       @default(now()) @db.Timestamptz(6)
-  id                                     String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  location_id                            String         @db.Uuid
-  order                                  Int
-  arrives_at                             DateTime?      @db.Timestamptz(6)
-  departs_at                             DateTime?      @db.Timestamptz(6)
-  action_items                           action_items[]
-  expenses                               expenses[]
-  footprints                             footprints[]
-  journeys_journeys_finish_idTowaypoints journeys[]     @relation("journeys_finish_idTowaypoints")
-  journeys_journeys_start_idTowaypoints  journeys[]     @relation("journeys_start_idTowaypoints")
-  locations                              locations      @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "waypoints_location_id_foreign")
-
-  @@unique([location_id, order], map: "waypoints_location_id_order_unique")
-  @@index([order], map: "waypoints_order_index")
 }

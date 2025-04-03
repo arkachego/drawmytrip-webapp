@@ -6,7 +6,13 @@ export const auth = defineAuth({
     externalProviders: {
       facebook: {
         clientId: secret('FACEBOOK_CLIENT_ID'),
-        clientSecret: secret('FACEBOOK_CLIENT_SECRET')
+        clientSecret: secret('FACEBOOK_CLIENT_SECRET'),
+        scopes: [ 'public_profile', 'email', 'openid' ],
+        attributeMapping: {
+          email: 'email',
+          givenName: 'first_name',
+          familyName: 'last_name',
+        },
       },
       callbackUrls: [
         'http://localhost:3000/',

@@ -2,13 +2,18 @@
 
 // Libraries
 import { useEffect, useState } from "react";
-import { AuthUser, getCurrentUser } from "aws-amplify/auth";
+import { Center, Loader } from "@mantine/core";
+import { fetchUserAttributes } from "aws-amplify/auth";
 
 // Components
 import Authenticator from "@/components/Authenticator";
 
+// Types
+import { ProfileType } from "@/types/ProfileType";
+
 // Utilities
 import "@/utilities/amplify";
+import { getServerInstance } from "@/utilities/server";
 
 type Props = {
   children: React.ReactNode,
@@ -16,33 +21,53 @@ type Props = {
 
 const UILayout: React.FC<Props> = ({ children }) => {
 
-  const [ user, setUser ] = useState<AuthUser | null>(null);
+  const [ loading, setLoading ] = useState<boolean>(true);
+  const [ user, setUser ] = useState<ProfileType | null>(null);
 
-  const checkUser = async () => {
+  const fetchUserProfile = async () => {
     try {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-      const response = await fetch('/api/user', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('CognitoIdentityServiceProvider.1rp89ae3bnjpqdo2m23g6am9ac.facebook_9646201818775267.idToken')}`,
-        }
-      });
-      console.log(response);
+      const serverInstance = await getServerInstance();
+      const getResponse = await serverInstance.get('/user');
+      let userData = getResponse.data;
+      if (!userData) {
+        const userAttributes = await fetchUserAttributes();
+        const postResponse = await serverInstance.post('/user', {
+          first_name: userAttributes.given_name,
+          last_name: userAttributes.family_name,
+          email: userAttributes.email,
+        });
+        userData = postResponse.data;
+      }
+      setUser(userData);
     }
     catch (error) {
       console.error(error);
     }
+    finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    checkUser();
+    fetchUserProfile();
   }, []);
 
-  return user ? children : (
-    <Authenticator />
-  );
-
+  if (loading) {
+    return (
+      <Center w='100%' h='100%'>
+        <Loader/>
+      </Center>
+    );
+  }
+  else if (user) {
+    return children;
+  }
+  else {
+    return (
+      <Authenticator />
+    );
+  }
+  
 };
 
 export default UILayout;
