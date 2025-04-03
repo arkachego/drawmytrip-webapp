@@ -7,7 +7,7 @@ import { signInWithRedirect } from 'aws-amplify/auth';
 import { IconBrandFacebook } from "@tabler/icons-react";
 import { Button, Card, Center, Stack, Text, Title } from "@mantine/core";
 
-const Authenticator: React.FC = () => {
+const Authoriser: React.FC = () => {
 
   const [ loading, { toggle } ] = useDisclosure();
 
@@ -39,4 +39,4 @@ const Authenticator: React.FC = () => {
 
 };
 
-export default Authenticator;
+export default Authoriser;
