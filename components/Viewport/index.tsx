@@ -14,21 +14,19 @@ type Props = {
 
 const Viewport: React.FC<Props> = ({ children, shades }) => {
 
-  const [ mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [ desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const [ opened, { toggle }] = useDisclosure();
 
   return (
     <AppShell
       header={{ height: 70 }}
-      navbar={{ width: 270, breakpoint: 'sm', collapsed: { mobile: !mobileOpened, desktop: !desktopOpened } }}
+      navbar={{ width: 270, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       padding="md"
     >
-      <AppShell.Header style={{ backgroundColor: shades[2], border: 0 }}>
+      <AppShell.Header style={{ backgroundColor: shades[7], border: 0 }}>
         <TopMenu
-          mobileOpened={mobileOpened}
-          toggleMobile={toggleMobile}
-          desktopOpened={desktopOpened}
-          toggleDesktop={toggleDesktop}
+          shades={shades}
+          opened={opened}
+          toggle={toggle}
         />
       </AppShell.Header>
       <AppShell.Navbar style={{ backgroundColor: shades[1], border: 0 }}>

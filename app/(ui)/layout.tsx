@@ -2,15 +2,12 @@
 
 // Libraries
 import { useEffect, useState } from "react";
-import { Center, Loader, MantineColorsTuple, useMantineTheme } from "@mantine/core";
+import { Center, Loader, useMantineTheme } from "@mantine/core";
 import { fetchUserAttributes } from "aws-amplify/auth";
 
 // Components
 import Authoriser from "@/components/Authoriser";
 import Viewport from "@/components/Viewport";
-
-// Types
-import { ProfileType } from "@/types/ProfileType";
 
 // Utilities
 import "@/utilities/amplify";
@@ -24,7 +21,7 @@ const UILayout: React.FC<Props> = ({ children }) => {
 
   const { colors, primaryColor } = useMantineTheme();
   const [ loading, setLoading ] = useState<boolean>(true);
-  const [ user, setUser ] = useState<ProfileType | null>(null);
+  const [ user, setUser ] = useState<object | null>(null);
 
   const fetchUserProfile = async () => {
     try {

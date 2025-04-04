@@ -5,13 +5,13 @@ import { Button, Flex, Stack } from '@mantine/core';
 const SideMenu: React.FC = () => {
 
   return (
-    <Flex gap={0} p={4} w='100%'>
-      <Stack gap={8} p={4} w='100%'>
-        <Button variant="light" style={{ alignItems: "left" }}>Home</Button>
-        <Button variant="subtle">Profile</Button>
-        <Button variant="subtle">Settings</Button>
-      </Stack>
-    </Flex>
+    <Stack gap={4} p="md" w='100%'>
+      <Button variant="subtle">Trips</Button>
+      <Button variant="subtle">Vehicles</Button>
+      <Button variant="subtle">Invoices</Button>
+      <Button variant="subtle">Files</Button>
+      <Button variant="subtle">Settings</Button>
+    </Stack>
   );
   
 };
