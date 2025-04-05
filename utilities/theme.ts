@@ -9,18 +9,6 @@ const nunito = Nunito({
 
 const theme = createTheme({
   colors: {
-    "pale-blue": [
-      "#ecf4ff",
-      "#dce4f5",
-      "#b9c7e2",
-      "#94a8d0",
-      "#748dc0",
-      "#5f7cb7",
-      "#5474b4",
-      "#44639f",
-      "#3a5890",
-      "#2c4b80"
-    ],
     "pale-indigo": [
       "#eff2ff",
       "#dfe2f2",
@@ -33,29 +21,17 @@ const theme = createTheme({
       "#424e88",
       "#36437a"
     ],
-    "pale-purple": [
-      "#f1f1ff",
-      "#e0dff2",
-      "#bfbdde",
-      "#9b98ca",
-      "#7d79b9",
-      "#6a66af",
-      "#605cac",
-      "#504c97",
-      "#464388",
-      "#3b3979"
-    ],
-    "rock-salt": [
-      "#fff2ed",
-      "#ede5e3",
-      "#d2cbc9",
-      "#b8afac",
-      "#a19794",
-      "#938884",
-      "#8d807b",
-      "#7b6d68",
-      "#70605b",
-      "#65514a"
+    "pale-blue": [
+      "#ecf4ff",
+      "#dce4f5",
+      "#b9c7e2",
+      "#94a8d0",
+      "#748dc0",
+      "#5f7cb7",
+      "#5474b4",
+      "#44639f",
+      "#3a5890",
+      "#2c4b80"
     ],
   },
   fontSizes: {
@@ -65,9 +41,9 @@ const theme = createTheme({
     lg: rem(22),
     xl: rem(24),
   },
-  primaryColor: "pale-purple",
+  primaryColor: "pale-indigo",
   primaryShade: 6,
-  defaultRadius: "sm",
+  defaultRadius: "lg",
   fontFamily: `${nunito.style.fontFamily}, sans-serif`,
   headings: {
     fontFamily: `${nunito.style.fontFamily}, sans-serif`,

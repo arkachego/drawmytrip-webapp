@@ -21,7 +21,7 @@ const TopMenu: React.FC<Props> = ({ shades, opened, toggle }) => {
         <Image src='/logo.png' width={48} height={48} alt='top-menu-logo'/>
         <Stack gap={0}>
           <Title order={2} c='white' fw={900}>DrawMyTrip</Title>
-          <Text size="xs" c='dimmed' mt={-5}>Plan &gt; Explore &gt; Audit</Text>
+          <Text size="xs" c='dimmed' mt={-5}>Plan &gt; Explore &gt; Repeat</Text>
         </Stack>
       </Flex>
       <Flex gap='sm'>
