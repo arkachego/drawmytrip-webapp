@@ -19,11 +19,12 @@ const Viewport: React.FC<Props> = ({ children, shades }) => {
 
   const [ opened, { toggle }] = useDisclosure();
 
+  console.log(opened, 'opened');
+
   return (
     <AppShell
       header={{ height: TOP_MENU_HEIGHT }}
       navbar={{ width: SIDE_MENU_WIDTH, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-      padding="md"
     >
       <AppShell.Header style={{ backgroundColor: shades[7], border: 0 }}>
         <TopMenu
@@ -42,7 +43,7 @@ const Viewport: React.FC<Props> = ({ children, shades }) => {
           <ProfileItem/>
         </AppShell.Section>
       </AppShell.Navbar>
-      <AppShell.Main style={{ backgroundColor: shades[0] }} pl={SIDE_MENU_WIDTH} pr={0} pt={TOP_MENU_HEIGHT} pb={0}>
+      <AppShell.Main w='100%' h='100%' style={{ backgroundColor: shades[0], overflow: 'hidden' }}>
         {children}
       </AppShell.Main>
     </AppShell>

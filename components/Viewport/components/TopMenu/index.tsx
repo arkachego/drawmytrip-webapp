@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "aws-amplify/auth";
-import { IconBell, IconBug, IconClockBolt, IconLogout, IconUser, IconUserCircle } from "@tabler/icons-react";
+import { IconBell, IconBug, IconClockBolt, IconLogout, IconMessage, IconUser, IconUserCircle } from "@tabler/icons-react";
 import { ActionIcon, Burger, Flex, Title, MantineColorsTuple, Text, Stack, Menu } from '@mantine/core';
 import Image from "next/image";
 
@@ -16,8 +16,8 @@ const TopMenu: React.FC<Props> = ({ shades, opened, toggle }) => {
 
   return (
     <Flex align="center" gap="md" justify="space-between" h="100%" px="md">
-      <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-      <Flex mt={-2} gap="xs">
+      <Flex mt={-2} gap="xs" align="center">
+        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" color="#FFFFFF" lineSize={2} mr={4}/>
         <Image src='/logo.png' width={48} height={48} alt='top-menu-logo'/>
         <Stack gap={0}>
           <Title order={2} c='white' fw={900}>DrawMyTrip</Title>
@@ -25,6 +25,16 @@ const TopMenu: React.FC<Props> = ({ shades, opened, toggle }) => {
         </Stack>
       </Flex>
       <Flex gap='sm'>
+        <Menu shadow="md" width={210}>
+          <Menu.Target>
+            <ActionIcon size="lg" radius="xl" variant="default" aria-label="logout">
+              <IconMessage/>
+            </ActionIcon>
+          </Menu.Target>
+          <Menu.Dropdown>
+            Notifications will be fetched from the server when the user clicks on the Menu Target
+          </Menu.Dropdown>
+        </Menu>
         <Menu shadow="md" width={210}>
           <Menu.Target>
             <ActionIcon size="lg" radius="xl" variant="default" aria-label="logout">

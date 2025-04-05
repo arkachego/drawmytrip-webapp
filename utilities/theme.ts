@@ -43,10 +43,26 @@ const theme = createTheme({
   },
   primaryColor: "pale-indigo",
   primaryShade: 6,
-  defaultRadius: "lg",
   fontFamily: `${nunito.style.fontFamily}, sans-serif`,
   headings: {
     fontFamily: `${nunito.style.fontFamily}, sans-serif`,
+  },
+  components: {
+    Card: {
+      defaultProps: {
+        radius: 'lg',
+      },
+    },
+    TextInput: {
+      defaultProps: {
+        radius: 'xl',
+      },
+    },
+    Button: {
+      defaultProps: {
+        radius: 'xl',
+      },
+    },
   },
 });
 
