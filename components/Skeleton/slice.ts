@@ -4,17 +4,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // Types
 import MenuItemType from '@/types/MenuItemType';
 
-interface ViewportState {
+interface SkeletonState {
   items: MenuItemType[];
 };
 
 
-const initialState: ViewportState = {
+const initialState: SkeletonState = {
   items: [],
 };
 
-const viewportSlice = createSlice({
-  name: 'viewport',
+const skeletonSlice = createSlice({
+  name: 'skeleton',
   initialState,
   reducers: {
     resetState: () => {
@@ -22,11 +22,11 @@ const viewportSlice = createSlice({
         ...initialState,
       };
     },
-    setItems: (state: ViewportState, action: PayloadAction<MenuItemType[]>) => {
+    setItems: (state: SkeletonState, action: PayloadAction<MenuItemType[]>) => {
       state.items = action.payload;
     },
   },
 });
 
-export const { resetState, setItems } = viewportSlice.actions;
-export default viewportSlice.reducer;
+export const { resetState, setItems } = skeletonSlice.actions;
+export default skeletonSlice.reducer;

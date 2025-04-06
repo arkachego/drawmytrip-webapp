@@ -5,10 +5,10 @@ import { useEffect } from "react";
 import { useMantineTheme } from "@mantine/core";
 
 // Actions
-import { setItems } from "@/components/Viewport/slice";
+import { setItems } from "@/components/Skeleton/slice";
 
 // Components
-import Viewport from "@/components/Viewport";
+import Skeleton from "@/components/Skeleton";
 
 // Utilities
 import { useAppDispatch } from "@/utilities/redux";
@@ -44,9 +44,9 @@ const TripLayout: React.FC<Props> = ({ children }) => {
   }, []);
 
   return (
-    <Viewport shades={colors['pale-blue']}>
+    <Skeleton shades={colors['pale-blue']}>
       {children}
-    </Viewport>
+    </Skeleton>
   );
 
 };

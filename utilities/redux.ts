@@ -4,11 +4,11 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 // Reducers
 import globalReducer from '@/app/(ui)/(root)/slice';
-import viewportReducer from '@/components/Viewport/slice';
+import skeletonReducer from '@/components/Skeleton/slice';
 
 const rootReducer = combineReducers({
   global: globalReducer,
-  viewport: viewportReducer,
+  skeleton: skeletonReducer,
 });
 
 export const store = configureStore({

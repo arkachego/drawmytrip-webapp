@@ -1,52 +1,50 @@
 // Libraries
-import { useDisclosure } from "@mantine/hooks";
-import { AppShell, ScrollArea, MantineColorsTuple } from "@mantine/core";
+import { Box, Container, ScrollArea } from "@mantine/core";
 
-// Components
-import TopMenu from "@/components/Viewport/components/TopMenu";
-import SideMenu from "@/components/Viewport/components/SideMenu";
-import ProfileItem from "@/components/Viewport/components/ProfileItem";
+// Utilities
+import { useAppSelector } from "@/utilities/redux";
 
 type Props = {
-  children: React.ReactNode;
-  shades: MantineColorsTuple;
+  header?: React.ReactNode;
+  content: React.ReactNode;
+  contained: boolean;
+  scrollable: boolean;
+  onBottomReached?: () => void;
 };
 
-const TOP_MENU_HEIGHT = 70;
-const SIDE_MENU_WIDTH = 270;
+const Viewport: React.FC<Props> = ({
+  header = null,
+  content,
+  contained,
+  scrollable,
+  onBottomReached = () => {},
+}) => {
 
-const Viewport: React.FC<Props> = ({ children, shades }) => {
+  const height = useAppSelector(state => state.global.height - 139);
 
-  const [ opened, { toggle }] = useDisclosure();
-
-  console.log(opened, 'opened');
+  const children = contained ? (
+    <Container p="md">
+      {content}
+    </Container>
+  ) : content;
 
   return (
-    <AppShell
-      header={{ height: TOP_MENU_HEIGHT }}
-      navbar={{ width: SIDE_MENU_WIDTH, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-    >
-      <AppShell.Header style={{ backgroundColor: shades[7], border: 0 }}>
-        <TopMenu
-          shades={shades}
-          opened={opened}
-          toggle={toggle}
-        />
-      </AppShell.Header>
-      <AppShell.Navbar style={{ backgroundColor: shades[1], border: 0 }}>
-        <AppShell.Section grow={true} component={ScrollArea}>
-          <SideMenu
-            shades={shades}
-          />
-        </AppShell.Section>
-        <AppShell.Section px="md" py="sm" style={{ backgroundColor: shades[2] }}>
-          <ProfileItem/>
-        </AppShell.Section>
-      </AppShell.Navbar>
-      <AppShell.Main w='100%' h='100%' style={{ backgroundColor: shades[0], overflow: 'hidden' }}>
-        {children}
-      </AppShell.Main>
-    </AppShell>
+    <>
+      {header && (
+        <Box bg='#FFFFFF' style={{ borderBottom: 'thin solid #CED4DA' }}>
+          {header}
+        </Box>
+      )}
+      {scrollable ? (
+        <ScrollArea w='100%' h={height} onBottomReached={onBottomReached}>
+          {children}
+        </ScrollArea>
+      ) : (
+        <Box w='100%' h={height}>
+          {children}
+        </Box>
+      )}
+    </>
   );
 
 };

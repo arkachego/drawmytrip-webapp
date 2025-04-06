@@ -18,7 +18,7 @@ const SideMenu: React.FC<Props> = ({ shades }) => {
 
   const router = useRouter();
   const pathname = usePathname();
-  const items = useAppSelector(state => state.viewport.items);
+  const items = useAppSelector(state => state.skeleton.items);
 
   return (
     <Stack gap={8} p="md" w='100%'>
