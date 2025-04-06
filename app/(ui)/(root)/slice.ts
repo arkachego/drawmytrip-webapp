@@ -2,7 +2,6 @@
 
 // Libraries
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MantineColorsTuple } from "@mantine/core";
 
 interface GlobalState {
   width: number;

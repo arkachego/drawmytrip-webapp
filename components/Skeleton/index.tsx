@@ -19,8 +19,6 @@ const Skeleton: React.FC<Props> = ({ children, shades }) => {
 
   const [ opened, { toggle }] = useDisclosure();
 
-  console.log(opened, 'opened');
-
   return (
     <AppShell
       header={{ height: TOP_MENU_HEIGHT }}
