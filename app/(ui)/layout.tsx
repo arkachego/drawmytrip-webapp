@@ -1,5 +1,8 @@
 'use client';
 
+// Libraries
+import { Notifications } from '@mantine/notifications';
+
 // Amplify
 import "@/utilities/amplify";
 
@@ -16,9 +19,12 @@ type Props = {
 const UILayout: React.FC<Props> = ({ children }) => {
 
   return (
-    <Provider store={store}>
-      {children}
-    </Provider>
+    <>
+      <Notifications/>
+      <Provider store={store}>
+        {children}
+      </Provider>
+    </>
   );
   
 };

@@ -13,6 +13,7 @@ interface VehiclesState {
   };
   edit: {
     loading: boolean;
+    dirty: boolean;
     item: VehicleType | null;
   },
 }
@@ -24,6 +25,7 @@ const initialState: VehiclesState = {
   },
   edit: {
     loading: false,
+    dirty: false,
     item: null,
   },
 };
@@ -47,6 +49,7 @@ const globalSlice = createSlice({
       state.edit.loading = action.payload;
     },
     loadVehicleItem: (state: VehiclesState, action: PayloadAction<VehicleType | undefined | null>) => {
+      state.edit.dirty = false;
       state.edit.item = (action.payload === undefined) ? {
         title: '',
         description: '',
@@ -60,42 +63,50 @@ const globalSlice = createSlice({
     },
     setVehicleTitle: (state: VehiclesState, action: PayloadAction<string>) => {
       if (state.edit.item) {
+        state.edit.dirty = true;
         state.edit.item.title = action.payload;
       }
     },
     setVehicleDescription: (state: VehiclesState, action: PayloadAction<string>) => {
       if (state.edit.item) {
+        state.edit.dirty = true;
         state.edit.item.description = action.payload || null;
       }
     },
     setVehicleImage: (state: VehiclesState, action: PayloadAction<string>) => {
       if (state.edit.item) {
+        state.edit.dirty = true;
         state.edit.item.image = action.payload || null;
       }
     },
     setVehicleCategory: (state: VehiclesState, action: PayloadAction<string>) => {
       if (state.edit.item) {
+        state.edit.dirty = true;
         state.edit.item.category = action.payload;
       }
     },
     setVehicleFuel: (state: VehiclesState, action: PayloadAction<string>) => {
       if (state.edit.item) {
+        state.edit.dirty = true;
         state.edit.item.fuel = action.payload;
       }
     },
     setVehicleMileage: (state: VehiclesState, action: PayloadAction<number>) => {
       if (state.edit.item) {
+        state.edit.dirty = true;
         state.edit.item.mileage = action.payload;
       }
     },
     setVehicleOccupancy: (state: VehiclesState, action: PayloadAction<number>) => {
       if (state.edit.item) {
+        state.edit.dirty = true;
         state.edit.item.occupancy = action.payload;
       }
     },
     setVehicleRegistration: (state: VehiclesState, action: PayloadAction<string>) => {
       if (state.edit.item) {
-        state.edit.item.registration = action.payload;
+        state.edit.dirty = true;
+        state.edit.item.registration = action.payload || null;
       }
     },
   },
