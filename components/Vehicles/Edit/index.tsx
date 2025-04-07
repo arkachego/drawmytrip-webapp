@@ -1,8 +1,10 @@
 // Libraries
-import { Button, Card, Drawer, NumberInput, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { Button, Card, Drawer, FileInput, Flex, NumberInput, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
 
 // Actions
 import {
+  setListLoading,
+  setEditLoading,
   loadVehicleItem,
   setVehicleTitle,
   setVehicleDescription,
@@ -13,9 +15,12 @@ import {
   setVehicleRegistration,
 } from "../slice";
 
+// Types
+import VehicleType from "@/types/VehicleType";
+
 // Utilities
 import { useAppDispatch, useAppSelector } from "@/utilities/redux";
-import { IconDeviceFloppy } from "@tabler/icons-react";
+import { IconDeviceFloppy, IconTrash } from "@tabler/icons-react";
 import { getServerInstance } from "@/utilities/server";
 
 const Edit: React.FC = () => {
@@ -24,15 +29,47 @@ const Edit: React.FC = () => {
   const opened = useAppSelector(state => state.vehicles.edit.item !== null);
   const vehicle = useAppSelector(state => state.vehicles.edit.item);
 
-  const onSubmit: () => void = async () => {
+  const onDelete: () => void = async () => {
     try {
+      dispatch(setEditLoading(true));
       const serverInstance = await getServerInstance();
-      const postResponse = await serverInstance.post('/vehicle', vehicle);
-      const vehicleData = postResponse.data;
-      console.log(vehicleData);
+      await serverInstance.delete(`/vehicle?id=${vehicle?.id}`);
+      dispatch(loadVehicleItem(null));
+      dispatch(setListLoading(true));
     }
     catch (error) {
       console.error(error);
+    }
+    finally {
+      dispatch(setEditLoading(false));
+    }
+  };
+
+  const onMutate: () => void = async () => {
+    try {
+      dispatch(setEditLoading(true));
+      const serverInstance = await getServerInstance();
+      const { created_at, updated_at, user_id, ...rest } = vehicle as unknown as VehicleType;
+      const payload ={
+        ...rest,
+        description: rest?.description || null,
+        image: rest?.image || null,
+        registration: rest?.registration || null,
+      }
+      if (payload.id) {
+        await serverInstance.put('/vehicle', payload);
+      }
+      else {
+        await serverInstance.post('/vehicle', payload);
+      }
+      dispatch(loadVehicleItem(null));
+      dispatch(setListLoading(true));
+    }
+    catch (error) {
+      console.error(error);
+    }
+    finally {
+      dispatch(setEditLoading(false));
     }
   };
 
@@ -41,7 +78,6 @@ const Edit: React.FC = () => {
       position="right"
       opened={opened}
       closeOnEscape={false}
-      closeOnClickOutside={false}
       onClose={() => dispatch(loadVehicleItem(null))}
       title={`${vehicle?.id ? 'Edit' : 'Add'} Vehicle`}
     >
@@ -94,10 +130,10 @@ const Edit: React.FC = () => {
           <Card.Section withBorder={true} inheritPadding={true}>
             <Text fw={700} mt="md">Optional Fields</Text>
             <Stack gap="md" pt="xs" pb="lg">
-              {/* <FileInput
+              <FileInput
                 label="Image"
                 description="Maximum 5 MB"
-              /> */}
+              />
               <TextInput
                 label="Registration"
                 description="Maximum 20 characters"
@@ -116,13 +152,25 @@ const Edit: React.FC = () => {
             </Stack>
           </Card.Section>
         </Card>
-        <Button
-          fullWidth={true}
-          onClick={onSubmit}
-        >
-          <IconDeviceFloppy/>
-          <Text pl={4}>Save</Text>
-        </Button>
+        <Flex gap="md">
+          {vehicle?.id && (
+            <Button
+              fullWidth={true}
+              color="red"
+              onClick={onDelete}
+            >
+              <IconTrash/>
+              <Text pl={4}>Delete</Text>
+            </Button>
+          )}
+          <Button
+            fullWidth={true}
+            onClick={onMutate}
+          >
+            <IconDeviceFloppy/>
+            <Text pl={4}>Save</Text>
+          </Button>
+        </Flex>
       </Stack>
     </Drawer>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 // Libraries
-import { Button, Flex, Text, TextInput } from "@mantine/core";
+import { Button, Flex, Stack, Text, TextInput } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 
 // Actions
@@ -36,14 +36,18 @@ const List: React.FC = () => {
             </Button>
         </Flex>
       )}
-      content={vehicles.map((vehicle, index) => {
-        return (
-          <Item
-            key={index}
-            vehicle={vehicle}
-          />
-        );
-      })}
+      content={(
+        <Stack>
+          {vehicles.map((vehicle, index) => {
+            return (
+              <Item
+                key={index}
+                vehicle={vehicle}
+              />
+            );
+          })}
+        </Stack>
+      )}
       contained={true}
       scrollable={true}
     />
