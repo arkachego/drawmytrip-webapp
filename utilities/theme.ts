@@ -90,6 +90,12 @@ const theme = createTheme({
         radius: 'lg',
       },
     },
+    Fieldset: {
+      defaultProps: {
+        variant: "filled",
+        radius: 'lg',
+      },
+    },
     Button: {
       defaultProps: {
         radius: 'xl',
