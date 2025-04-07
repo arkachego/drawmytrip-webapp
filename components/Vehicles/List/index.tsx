@@ -19,10 +19,6 @@ const List: React.FC = () => {
   const dispatch = useAppDispatch();
   const vehicles = useAppSelector(state => state.vehicles.list.items);
 
-  const onBottomReached = () => {
-
-  };
-
   return (
     <Viewport
       header={(
@@ -50,7 +46,6 @@ const List: React.FC = () => {
       })}
       contained={true}
       scrollable={true}
-      onBottomReached={onBottomReached}
     />
   );
 

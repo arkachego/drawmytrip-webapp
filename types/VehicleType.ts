@@ -5,8 +5,11 @@ type VehicleType = {
   user_id?: string;
   title: string;
   description: string | null;
+  image: string | null;
   category: string;
-  tenancy: number;
+  fuel: string;
+  mileage: number;
+  occupancy: number;
   registration: string | null;
 };
 

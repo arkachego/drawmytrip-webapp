@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
 }
 
@@ -323,8 +323,11 @@ model Vehicle {
   user_id      String       @db.Uuid
   title        String       @db.VarChar(20)
   description  String?      @db.VarChar(500)
-  category     String       @db.VarChar(50)
-  tenancy      Int
+  image        String?      @db.VarChar(250)
+  category     String       @db.VarChar(10)
+  fuel         String       @db.VarChar(20)
+  mileage      Int
+  occupancy    Int
   registration String?      @db.VarChar(20)
   Conveyance   Conveyance[]
   User         User         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "vehicle_user_id_foreign")

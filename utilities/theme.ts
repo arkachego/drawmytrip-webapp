@@ -51,11 +51,43 @@ const theme = createTheme({
     Card: {
       defaultProps: {
         radius: 'lg',
+        shadow: "md",
       },
     },
     TextInput: {
       defaultProps: {
-        radius: 'xl',
+        radius: 'lg',
+      },
+    },
+    Textarea: {
+      defaultProps: {
+        radius: 'lg',
+      },
+    },
+    NumberInput: {
+      defaultProps: {
+        radius: 'lg',
+      },
+    },
+    FileInput: {
+      defaultProps: {
+        radius: 'lg',
+      },
+    },
+    SegmentedControl: {
+      defaultProps: {
+        size: "xs",
+        radius: 'lg',
+      },
+    },
+    Select: {
+      defaultProps: {
+        radius: 'lg',
+      },
+    },
+    MultiSelect: {
+      defaultProps: {
+        radius: 'lg',
       },
     },
     Button: {

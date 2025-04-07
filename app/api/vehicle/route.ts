@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Services
-import { readVehicle, createVehicle } from '@/services/vehicle';
+import { readVehicles, createVehicle } from '@/services/vehicle';
 
 // Integrations
 import { verifyRequestor } from '@/integrations/cognito';
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   try {
     const { sub: userId } = await verifyRequestor(request);
 
-    const payload = await readVehicle(
+    const payload = await readVehicles(
       userId as string,
     );
     return NextResponse.json(payload, { status: 200 });
