@@ -1,21 +1,30 @@
 // Libraries
-import { IconCar, IconExclamationCircle, IconInvoice, IconMapPin, IconSettings } from "@tabler/icons-react";
+import { IconCar, IconClockBolt, IconExclamationCircle, IconFileInvoice, IconHomeLink, IconMap2, IconSettings } from "@tabler/icons-react";
+
+// Constants
+import NAV_ROUTES from "@/constants/nav-routes";
 
 // Types
 import MenuItemType from "@/types/MenuItemType";
 
 export const getMenuItemIcon: (item: MenuItemType) => React.FC = (item: MenuItemType) => {
   switch (item.label) {
-    case 'Trips': {
-      return IconMapPin;
+    case NAV_ROUTES.TRIPS: {
+      return IconMap2;
     }
-    case 'Vehicles': {
+    case NAV_ROUTES.VEHICLES: {
       return IconCar;
     }
-    case 'Invoices': {
-      return IconInvoice;
+    case NAV_ROUTES.SUBSCRIPTIONS: {
+      return IconClockBolt;
     }
-    case 'Settings': {
+    case NAV_ROUTES.INVOICES: {
+      return IconFileInvoice;
+    }
+    case NAV_ROUTES.ADDRESSES: {
+      return IconHomeLink;
+    }
+    case NAV_ROUTES.SETTINGS: {
       return IconSettings;
     }
     default: {

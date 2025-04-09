@@ -75,8 +75,10 @@ const RootLayout: React.FC<Props> = ({ children }) => {
       }
       dispatch(setProfile(userProfile));
     }
-    catch (error) {
-      console.error(error);
+    catch (error: any) {
+      if (error.name !== 'UserUnAuthenticatedException') {
+        console.error(error);
+      }
     }
     finally {
       dispatch(setLoading(false));
@@ -84,12 +86,16 @@ const RootLayout: React.FC<Props> = ({ children }) => {
   };
 
   useEffect(() => {
+    updateScreenSize();
     window.addEventListener('resize', updateScreenSize);
-    if (hasRequiredSize()) {
-      fetchUserProfile();
-    }
     return () =>  window.removeEventListener('resize', updateScreenSize);
   }, []);
+
+  useEffect(() => {
+    if (loading) {
+      fetchUserProfile();
+    }
+  }, [ loading ]);
 
   if (hasRequiredSize()) {
     return loading ? <RootLoader/> : children;

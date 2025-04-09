@@ -27,17 +27,16 @@ export async function POST(request: NextRequest) {
     const { sub: userId } = await verifyRequestor(request);
     const { first_name, last_name, email } = await request.json();
 
-    const payload = await createUser(
-      userId as string,
+    const payload = await createUser({
+      id: userId as string,
       first_name,
       last_name,
       email,
-    );
+  });
     return NextResponse.json(payload, { status: 200 });
   }
   catch (error) {
     console.log(error);
     return NextResponse.json({ status: 500 }, { status: 500 });
   }
-
 };

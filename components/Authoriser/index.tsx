@@ -23,7 +23,7 @@ const Authoriser: React.FC = () => {
       <Card radius="lg" shadow="lg" w={360}>
         <Card.Section style={{ textAlign: "center" }}>
           <Stack gap={0} align='center' p='xl'>
-            <Image src="/logo.png" alt="Logo" width={180} height={180}/>
+            <Image src="/logo.png" alt="Logo" width={180} height={180} priority={true}/>
             <Title order={2} mt='md' fw={800}>DrawMyTrip</Title>
             <Text size="sm" c="dimmed" mt={-4}>Plan your trips like never before!</Text>
             <Button disabled={loading} loading={loading} mt="md" onClick={onClick}>

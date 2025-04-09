@@ -26,7 +26,6 @@ const Skeleton: React.FC<Props> = ({ children, shades }) => {
     >
       <AppShell.Header style={{ backgroundColor: shades[7], border: 0 }}>
         <TopMenu
-          shades={shades}
           opened={opened}
           toggle={toggle}
         />

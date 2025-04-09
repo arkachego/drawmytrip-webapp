@@ -3,16 +3,19 @@
 // Libraries
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+// Types
+import UserType from '@/types/UserType';
+
 interface GlobalState {
   width: number;
   height: number;
   loading: boolean;
-  profile: object | null;
+  profile: UserType | null;
 }
 
 const initialState: GlobalState = {
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: 0,
+  height: 0,
   loading: true,
   profile: null,
 };
@@ -35,7 +38,7 @@ const globalSlice = createSlice({
     setLoading: (state: GlobalState, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setProfile: (state: GlobalState, action: PayloadAction<object | null>) => {
+    setProfile: (state: GlobalState, action: PayloadAction<UserType | null>) => {
       state.profile = action.payload;
     },
   },
